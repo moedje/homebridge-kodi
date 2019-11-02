@@ -291,7 +291,9 @@ KodiPlatform.prototype = {
     updateKodiPlayer: async function () {
         connection.kodiRequest(this.config, "Player.GetProperties", { "playerid": 1, "properties": ["speed", "percentage"] })
             .then(result => {
-                let speed = result.speed != 0;
+                // On OSMC rPi the below was returning an null value error so added null value handling as done with unknown result.item.type below
+                // let speed = result.speed != 0;
+                let speed = result.speed != 0 ? result.speed : "-";
                 let percentage = Math.round(result.percentage);
                 playerLightbulbService.getCharacteristic(Characteristic.On).updateValue(speed);
                 playerLightbulbService.getCharacteristic(Characteristic.Brightness).updateValue(percentage);
